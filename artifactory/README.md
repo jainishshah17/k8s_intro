@@ -3,10 +3,10 @@
 #### Docker registry secret
 In case you built your own Artifactory image and pushed it to your private registry as suggested above, you might need to define a docker-registry secret to be used by Kubernetes to pull images
 ```bash
-$ export YOUR_DOCKER_REGISTRY=docker-dev-artifactory.workday.com
-$ export USER=jainish.shah
+$ export YOUR_DOCKER_REGISTRY=docker.io
+$ export USER=jainishshah17
 $ export PASSWORD=API_KEY
-$ kubectl create secret docker-registry docker-reg-secret --docker-server=${YOUR_DOCKER_REGISTRY} --docker-username=${USER} --docker-password=${PASSWORD} --docker-email=jainish.shah@workday.com
+$ kubectl create secret docker-registry docker-reg-secret --docker-server=${YOUR_DOCKER_REGISTRY} --docker-username=${USER} --docker-password=${PASSWORD} --docker-email=jainishshah@yahoo.com
 ```
 #### SSL secret
 Create the SSL secret that will be used by the Nginx pod  
