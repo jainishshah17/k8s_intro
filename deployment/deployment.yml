@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-version-deployment
+  labels:
+    app: node-version
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node-version
+  template:
+    metadata:
+      labels:
+        app: node-version
+    spec:
+      containers:
+        - name: node-version
+          image: jainishshah17/node-version:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "200Mi"
+              cpu: "200m"
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+          readinessProbe:
+            httpGet:
+              port: 3000
+              path: /
+            failureThreshold: 5
+            successThreshold: 2
+            initialDelaySeconds: 30
+          livenessProbe:
+            httpGet:
+              port: 3000
+              path: /
+            failureThreshold: 5
+            successThreshold: 1
+            initialDelaySeconds: 30
