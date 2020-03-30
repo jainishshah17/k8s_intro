@@ -63,6 +63,11 @@ kubectl apply -f deployment.yml
 kubectl get deployment
 ```
 
+* Check Rollout status
+```bash
+kubectl rollout status deployment.apps/node-version-deployment
+```
+
 * Check pods
 ```bash
 kubectl get pods
@@ -86,6 +91,16 @@ kubectl logs -f $POD_NAME
 * Exec into pod 
 ```bash
 kubectl exec -it $POD_NAME bash
+```
+
+* Let’s update the node-version Pods to use the jainishshah17/node-version:2.2.14 image instead of the jainishshah17/node-version:2.2.13 image.
+```bash
+kubectset image deployment.apps/node-version-deployment node-version=jainishshah17/node-version:2.2.14 --record
+```
+
+* Check Rollout status
+```bash
+kubectl rollout status deployment.apps/node-version-deployment
 ```
 
 * Delete deployment 

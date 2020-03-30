@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: node-version
-          image: jainishshah17/node-version:latest
+          image: jainishshah17/node-version:2.2.13
           imagePullPolicy: IfNotPresent
           resources:
             limits:
