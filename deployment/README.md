@@ -103,6 +103,11 @@ kubectset image deployment.apps/node-version-deployment node-version=jainishshah
 kubectl rollout status deployment.apps/node-version-deployment
 ```
 
+* Check rollout history
+```bash
+kubectl rollout history deployment.apps/node-version-deployment
+```
+
 * Delete deployment 
 ```bash
 kubectl delete -f deployment.yml
