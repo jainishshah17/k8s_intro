@@ -63,6 +63,27 @@ kubectl apply -f deployment.yml
 kubectl get deployment
 ```
 
+* Create service 
+```bash
+kubectl apply -f service.yml
+```
+
+* Check services 
+```bash
+kubectl get services
+```
+
+* Get Application URL
+```bash
+export NODE_PORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services node-version-service)
+
+export NODE_IP=$(minikube ip)
+
+echo http://$NODE_IP:$NODE_PORT/
+```
+
+Open printed URL in browser to access node-version application 
+
 * Check Rollout status
 ```bash
 kubectl rollout status deployment.apps/node-version-deployment
@@ -106,6 +127,16 @@ kubectl rollout status deployment.apps/node-version-deployment
 * Check rollout history
 ```bash
 kubectl rollout history deployment.apps/node-version-deployment
+```
+
+* Refresh application URL to see new version being deployed.
+```bash
+echo http://$NODE_IP:$NODE_PORT/
+```
+
+* Delete service 
+```bash
+kubectl delete -f service.yml
 ```
 
 * Delete deployment 
