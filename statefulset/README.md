@@ -53,14 +53,14 @@ kubectl version
 kubectl cluster-info
 ```
 
-* Create node-version deployment 
+* Create node-version statefulset 
 ```bash
-kubectl apply -f deployment.yml
+kubectl apply -f statefulset.yml
 ```
 
-* Check deployment 
+* Check statefulset 
 ```bash
-kubectl get deployment
+kubectl get statefulset
 ```
 
 * Create service 
@@ -86,7 +86,7 @@ Open printed URL in browser to access node-version application
 
 * Check Rollout status
 ```bash
-kubectl rollout status deployment.apps/node-version-deployment
+kubectl rollout status sts node-version-statefulset
 ```
 
 * Check pods
@@ -94,9 +94,9 @@ kubectl rollout status deployment.apps/node-version-deployment
 kubectl get pods
 ```
 
-* Describe deployment
+* Describe statefulset
 ```bash
-kubectl describe deployments node-version-deployment
+kubectl describe sts node-version-statefulset
 ```
 
 * Describe pod
@@ -114,19 +114,24 @@ kubectl logs -f $POD_NAME
 kubectl exec -it $POD_NAME bash
 ```
 
-* Let’s update the node-version Pods to use the jainishshah17/node-version:2.2.14 image instead of the jainishshah17/node-version:2.2.13 image.
+* Let's scale node-version statefulSet to 5 replicas
 ```bash
-kubectl set image deployment.apps/node-version-deployment node-version=jainishshah17/node-version:2.2.14 --record
+kubectl scale sts node-version-statefulset --replicas=5
 ```
 
 * Check Rollout status
 ```bash
-kubectl rollout status deployment.apps/node-version-deployment
+kubectl rollout status sts node-version-statefulset
 ```
 
-* Check rollout history
+* Let’s update the node-version Pods to use the jainishshah17/node-version:2.3.1 image instead of the jainishshah17/node-version:2.3.2 image.
 ```bash
-kubectl rollout history deployment.apps/node-version-deployment
+kubectl set image sts node-version-statefulset node-version=jainishshah17/node-version:2.3.2 --record
+```
+
+* Check Rollout history
+```bash
+kubectl rollout history sts node-version-statefulset
 ```
 
 * Refresh application URL to see new version being deployed.
@@ -139,7 +144,7 @@ echo http://$NODE_IP:$NODE_PORT/
 kubectl delete -f service.yml
 ```
 
-* Delete deployment 
+* Delete statefulset 
 ```bash
-kubectl delete -f deployment.yml
+kubectl delete -f statefulset.yml
 ```
