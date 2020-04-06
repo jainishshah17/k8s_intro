@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-k8s
+  template:
+    metadata:
+      labels:
+        app: nginx-k8s
+    spec:
+      containers:
+        - name: nginx-k8s
+          image: nginx:1.17
+          ports:
+            - containerPort: 80
+          env:
+            - name: AUTHOR
+              valueFrom:
+                configMapKeyRef:
+                  name: example-config
+                  key: name
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "200Mi"
+              cpu: "200m"
+          volumeMounts:
+            - mountPath: "/usr/share/nginx/html"
+              name: content
+          livenessProbe:
+            httpGet:
+              port: 80
+              path: /
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              port: 80
+              path: /
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 5
+      volumes:
+        - name: content
+          configMap:
+            name: static-content
+

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: static-content
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <body>
+
+    <h1 align="center">Kubernetes ConfigMap</h1>
+    <p align="center">This content is coming from ConfigMap containing index.html file.</p>
+
+    </body>
+    </html>
