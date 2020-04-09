@@ -64,10 +64,26 @@ dGVzdF9kYg==
 ```
 *Note:* Update `configmap-literal.yml` with base64 values of your credentials
 
-* Create secret 
+* Create Generic secret 
 ```bash
 kubectl apply -f configmap-literal.yml
 kubectl apply -f configmap-file.yml
+```
+
+#### Docker registry secret
+In case you built your own Artifactory image and pushed it to your private registry as suggested above, you might need to define a docker-registry secret to be used by Kubernetes to pull images
+```bash
+$ export YOUR_DOCKER_REGISTRY=docker.io
+$ export USER=jainishshah17
+$ export PASSWORD=API_KEY
+$ kubectl create secret docker-registry docker-reg-secret --docker-server=${YOUR_DOCKER_REGISTRY} --docker-username=${USER} --docker-password=${PASSWORD} --docker-email=jainishshah@yahoo.com
+```
+
+#### SSL secret
+Create the SSL secret that can be used by the Nginx pod  
+**NOTE:** These are self signed key and certificate for demo use only!
+```bash
+$ kubectl create secret tls art-tls --cert=./ssl/demo.pem --key=./ssl/demo.key
 ```
 
 * Check secret 
