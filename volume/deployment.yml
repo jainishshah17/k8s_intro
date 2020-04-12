@@ -1,16 +1,15 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: node-version-statefulset
+  name: node-version-deployment
   labels:
     app: node-version
 spec:
   # modify replicas according to your case
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: node-version
-  serviceName: node-version
   template:
     metadata:
       labels:
@@ -48,13 +47,12 @@ spec:
             successThreshold: 1
             initialDelaySeconds: 30
           volumeMounts:
-            - mountPath: "/usr/src/app/logs"
-              name: logs
-  volumeClaimTemplates:
-    - metadata:
-        name: logs
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
+          - name: logs-volume
+            mountPath: "/usr/src/app/logs"
+      volumes:
+        - name: logs-volume
+          hostPath:
+            # Ensure the file directory is created on Host.
+            path: "/var/node-version/logs"
+            # this field is optional
+            type: DirectoryOrCreate
