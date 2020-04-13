@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-deployment
+  namespace: kube-system
+  labels:
+    app: elasticsearch
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: discovery.type
+              value: single-node
+          ports:
+            - name: client
+              containerPort: 9200
+            - name: nodes
+              containerPort: 9300
+          volumeMounts:
+            - name: data
+              mountPath: "/usr/share/elasticsearch/data"
+      volumes:
+        - name: data
+          hostPath:
+            path: "/mnt/data"
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: kube-system
+  labels:
+    service: elasticsearch
+spec:
+  ports:
+    - port: 9200
+      name: client
+    - port: 9300
+      name: nodes
+  selector:
+    app: elasticsearch
