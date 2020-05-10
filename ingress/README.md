@@ -58,6 +58,11 @@ kubectl cluster-info
 minikube addons enable ingress
 ```
 
+* Verify that the NGINX Ingress controller is running
+```bash
+kubectl get pods -n kube-system
+```
+
 * Create node-version deployment for V1 and V2
 ```bash
 kubectl apply -f deployment-v1.yml
