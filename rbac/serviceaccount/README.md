@@ -3,7 +3,6 @@
 ## Install Minikube
 
 * To check if virtualization is supported on macOS, run the following command on your terminal.
-
 ```bash
 sysctl -a | grep -E --color 'machdep.cpu.features|VMX' 
 ```
@@ -17,26 +16,22 @@ The easiest way to install Minikube on macOS is using Homebrew:
 brew install minikube
 ```
 
-* Start minikube with hyperkit
-
+* Start minikube with hyperkit:
 ```bash
 minikube start --vm-driver=hyperkit
 ```
 
 * Check the status of the cluster:
-
 ```bash
 minikube status
 ```
 
 * Check minikube version:
-
 ```bash
 minikube version
 ```
 
 * Enable minikube dashboard:
-
 ```bash
 minikube dashboard
 ```
@@ -58,10 +53,15 @@ kubectl cluster-info
 kubectl api-versions | grep rbac
 ```
 Note: If RBAC is enabled you should see the API version `rbac.authorization.k8s.io/v1`
-      
-* Create a ServiceAccount, say 'jainish':
+
+* Create namespace `ci`:
 ```bash
-kubectl create serviceaccount jainish
+kubectl create ns ci
+```      
+      
+* Create a ServiceAccount, say 'jenkins':
+```bash
+kubectl create serviceaccount jenkins
 ```
 
 * Create Role `secret-reader`:
@@ -71,7 +71,7 @@ kubectl create role secret-reader --verb=get --verb=list --verb=watch --resource
 
 * Create RoleBinding `secret-reader-binding`:
 ```bash
-kubectl create rolebinding secret-reader-binding --role=secret-reader --serviceaccount=default:jainish --namespace=default
+kubectl create rolebinding secret-reader-binding --role=secret-reader --serviceaccount=default:jenkins --namespace=ci
 ```
 
 * Create clusterRole, say `pod-reader`:
@@ -81,27 +81,27 @@ kubectl create clusterrole pod-reader --verb=get --verb=list --verb=watch --reso
 
 * Create clusterRoleBinding, say `pod-reader-binding`:
 ```bash
-kubectl create clusterrolebinding pod-reader-binding --serviceaccount=default:jainish --clusterrole=pod-reader
+kubectl create clusterrolebinding pod-reader-binding --serviceaccount=default:jenkins --clusterrole=pod-reader
 ```
 
 * Let's get the token from secret of ServiceAccount we have created. We will use this token to authenticate user:
 ```bash
-TOKEN=$(kubectl describe secrets "$(kubectl describe serviceaccount jainish | grep -i Tokens | awk '{print $2}')" | grep token: | awk '{print $2}')
+TOKEN=$(kubectl describe secrets "$(kubectl describe serviceaccount jenkins | grep -i Tokens | awk '{print $2}')" | grep token: | awk '{print $2}')
 ```
 
-* Now set the credentials for the user in kube config file. I am using `jainish` as username:
+* Now set the credentials for the user in kube config file. I am using `jenkins` as username:
 ```bash
-kubectl config set-credentials jainish --token=$TOKEN
+kubectl config set-credentials jenkins --token=$TOKEN
 ```
 
-* Let's Create a Context say `developer`. I am using my clustername `minikube` here:
+* Let's Create a Context say `jenkins`. I am using my clustername `minikube` here:
 ```bash
-kubectl config set-context developer --cluster=minikube --user=jainish
+kubectl config set-context jenkins --cluster=minikube --user=jenkins --namespace=ci
 ```
 
 * Finally, use the context:
 ```bash
-kubectl config use-context developer
+kubectl config use-context jenkins
 ```
 
 * Now you can execute `kubectl get pods --all-namespaces`.
